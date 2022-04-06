@@ -63,16 +63,18 @@ func (o options) fileExists(fileName string) bool {
 }
 
 func (o options) getCAFile() (string, bool) {
-	return o.fileExistsInPath(o.certFile)
+	return o.fileExistsInPath(o.caFile)
 }
 
-// func (o options) getCertFile() (string, bool) {
-// 	return o.fileExistsInPath(o.certFile)
-// }
+func (o options) getCertFile() string {
+	fileName, _ := o.fileExistsInPath(o.certFile)
+	return fileName
+}
 
-// func (o options) getKeyFile() (string, bool) {
-// 	return o.fileExistsInPath(o.certFile)
-// }
+func (o options) getKeyFile() string {
+	fileName, _ := o.fileExistsInPath(o.keyFile)
+	return fileName
+}
 
 // func (o options) existCertAndKey() bool {
 // 	_, certOK := o.getCertFile()
@@ -108,6 +110,7 @@ func ClientProvider() Option {
 		o.caFile = "ca.pem" //nolint:goconst
 		o.certFile = "client.pem"
 		o.keyFile = "client-key.pem"
+		o.loadSystemCA = true
 	})
 }
 
@@ -117,7 +120,6 @@ func ServerProvider() Option {
 		o.caFile = "ca.pem"
 		o.certFile = "server.pem"
 		o.keyFile = "server-key.pem"
-		o.loadSystemCA = true
 	})
 }
 

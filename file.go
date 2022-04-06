@@ -36,7 +36,7 @@ func NewFileProvider(
 		opt.apply(&f.opts)
 	}
 
-	if f.identityCert, err = tls.LoadX509KeyPair(f.opts.certFile, f.opts.keyFile); err != nil {
+	if f.identityCert, err = tls.LoadX509KeyPair(f.opts.getCertFile(), f.opts.getKeyFile()); err != nil {
 		return nil, fmt.Errorf("failed loading certificates: %w", err)
 	}
 
