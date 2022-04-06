@@ -68,20 +68,15 @@ func (o options) getCAFile() (string, bool) {
 
 func (o options) getCertFile() string {
 	fileName, _ := o.fileExistsInPath(o.certFile)
+
 	return fileName
 }
 
 func (o options) getKeyFile() string {
 	fileName, _ := o.fileExistsInPath(o.keyFile)
+
 	return fileName
 }
-
-// func (o options) existCertAndKey() bool {
-// 	_, certOK := o.getCertFile()
-// 	_, keyOK := o.getKeyFile()
-
-// 	return certOK && keyOK
-// }
 
 // A Option sets options such as file paths, if a CA should be loaded, etc.
 type Option interface {
