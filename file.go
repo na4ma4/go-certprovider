@@ -24,7 +24,9 @@ type FileProvider struct {
 func NewFileProvider(
 	certDir string,
 	opts ...Option,
-) (c *FileProvider, err error) {
+) (*FileProvider, error) {
+	var err error
+
 	f := &FileProvider{ //nolint:varnamelen // `f` is fine for this scope.
 		certDir: os.ExpandEnv(certDir),
 		opts:    defaultOptions(),
