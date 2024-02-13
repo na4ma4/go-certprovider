@@ -4,7 +4,6 @@ import (
 	"crypto/tls"
 	"crypto/x509"
 	"fmt"
-	"io/ioutil"
 	"os"
 
 	"google.golang.org/grpc"
@@ -57,12 +56,12 @@ func NewFileProvider(
 	}
 
 	if caFile, ok := f.opts.getCAFile(); ok {
-		ca, err := ioutil.ReadFile(caFile) //nolint:gosec // should be decided at compile time for most usages.
-		if err != nil {
-			return nil, fmt.Errorf("failed loading certificates: %w", err)
+		ca, caErr := os.ReadFile(caFile)
+		if caErr != nil {
+			return nil, fmt.Errorf("failed loading certificates: %w", caErr)
 		}
 
-		if ok := f.caPool.AppendCertsFromPEM(ca); !ok {
+		if appendOk := f.caPool.AppendCertsFromPEM(ca); !appendOk {
 			return nil, ErrNoValidCertificates
 		}
 	}

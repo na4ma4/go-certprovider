@@ -5,6 +5,7 @@ import (
 	"errors"
 	"os"
 	"path"
+	"strings"
 )
 
 type options struct {
@@ -99,10 +100,24 @@ func newFuncOption(f func(*options)) *funcOption {
 	}
 }
 
+// ProviderFromString returns a CertificateProviderType from a supplied string.
+func ProviderFromString(in string, defaultProvider Option) Option {
+	switch strings.ToLower(in) {
+	case "serverprovider", "server":
+		return ServerProvider()
+	case "clientprovider", "client":
+		return ClientProvider()
+	case "certprovider", "cert":
+		return CertProvider()
+	}
+
+	return defaultProvider
+}
+
 // ClientProvider sets the file names to the defaults for a mTLS Client.
 func ClientProvider() Option {
 	return newFuncOption(func(o *options) {
-		o.caFile = "ca.pem" //nolint:goconst
+		o.caFile = "ca.pem" //nolint:goconst // less readable as a constant.
 		o.certFile = "client.pem"
 		o.keyFile = "client-key.pem"
 		o.loadSystemCA = true

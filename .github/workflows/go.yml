@@ -1,9 +1,14 @@
-name: Go
+name: "CI"
 
 on:
-  push:
   pull_request:
+  push:
+    branches:
+      - '**'
+    tags:
+      - '**'
 
 jobs:
-  unittest:
-    uses: na4ma4/actions/.github/workflows/unit-test.yml@v1
+  unit-test:
+    name: "Unit Test"
+    uses: na4ma4/actions/.github/workflows/unit-test.yml@main
