@@ -6,25 +6,32 @@ import (
 	"os"
 	"path"
 	"strings"
+	"time"
 )
 
 type options struct {
-	certFile      string
-	keyFile       string
-	searchPath    []string
-	caFile        string
-	loadSystemCA  bool
-	minTLSVersion uint16
+	certFile            string
+	keyFile             string
+	searchPath          []string
+	caFile              string
+	loadSystemCA        bool
+	minTLSVersion       uint16
+	insecureSkipVerify  bool
+	dynamicCertLifetime time.Duration
+	dynamicCertKeySize  int
 }
 
 func defaultOptions() options {
 	return options{
-		certFile:      "",
-		keyFile:       "",
-		searchPath:    []string{},
-		caFile:        "",
-		loadSystemCA:  false,
-		minTLSVersion: tls.VersionTLS13,
+		certFile:            "",
+		keyFile:             "",
+		searchPath:          []string{},
+		caFile:              "",
+		loadSystemCA:        false,
+		minTLSVersion:       tls.VersionTLS13,
+		insecureSkipVerify:  false,
+		dynamicCertLifetime: time.Hour,
+		dynamicCertKeySize:  2048, //nolint:gomnd // default key size for dynamic certificates.
 	}
 }
 
@@ -191,5 +198,26 @@ func MinTLSVersion(tlsVer uint16) Option {
 			tls.VersionTLS13:
 			opt.minTLSVersion = tlsVer
 		}
+	})
+}
+
+// InsecureSkipVerify sets the InsecureSkipVerify on the client options.
+func InsecureSkipVerify(verify bool) Option {
+	return newFuncOption(func(o *options) {
+		o.insecureSkipVerify = verify
+	})
+}
+
+// DynamicCertLifetime sets the lifetime of a dynamic certificate.
+func DynamicCertLifetime(certLifetime time.Duration) Option {
+	return newFuncOption(func(o *options) {
+		o.dynamicCertLifetime = certLifetime
+	})
+}
+
+// DynamicCertKeySize sets the key size of a dynamic certificate.
+func DynamicCertKeySize(certKeySize int) Option {
+	return newFuncOption(func(o *options) {
+		o.dynamicCertKeySize = certKeySize
 	})
 }
