@@ -79,11 +79,13 @@ func (c *DynamicProvider) CAPool() *x509.CertPool {
 
 // ServerOption returns the grpc.ServerOption for use with a new gRPC server.
 func (c *DynamicProvider) ServerOption() grpc.ServerOption {
-	creds := credentials.NewTLS(&tls.Config{ //nolint:gosec // default minimum is TLS1.3.
-		ClientCAs:    c.CAPool(),
-		ClientAuth:   tls.RequireAndVerifyClientCert,
-		Certificates: []tls.Certificate{c.IdentityCert()},
-		MinVersion:   c.opts.minTLSVersion,
+	//nolint:gosec // default minimum is TLS1.3. and skip verify false.
+	creds := credentials.NewTLS(&tls.Config{
+		ClientCAs:          c.CAPool(),
+		ClientAuth:         tls.RequireAndVerifyClientCert,
+		Certificates:       []tls.Certificate{c.IdentityCert()},
+		MinVersion:         c.opts.minTLSVersion,
+		InsecureSkipVerify: c.opts.serverInsecureSkipVerify,
 	})
 
 	return grpc.Creds(creds)
@@ -91,11 +93,13 @@ func (c *DynamicProvider) ServerOption() grpc.ServerOption {
 
 // DialOption returns the grpc.DialOption used with a gRPC client.
 func (c *DynamicProvider) DialOption(serverName string) grpc.DialOption {
-	creds := credentials.NewTLS(&tls.Config{ //nolint:gosec // default minimum is TLS1.3.
-		ServerName:   serverName,
-		RootCAs:      c.CAPool(),
-		Certificates: []tls.Certificate{c.IdentityCert()},
-		MinVersion:   c.opts.minTLSVersion,
+	//nolint:gosec // default minimum is TLS1.3. and skip verify false.
+	creds := credentials.NewTLS(&tls.Config{
+		ServerName:         serverName,
+		RootCAs:            c.CAPool(),
+		Certificates:       []tls.Certificate{c.IdentityCert()},
+		MinVersion:         c.opts.minTLSVersion,
+		InsecureSkipVerify: c.opts.dialInsecureSkipVerify,
 	})
 
 	return grpc.WithTransportCredentials(creds)

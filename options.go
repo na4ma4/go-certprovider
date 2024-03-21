@@ -10,28 +10,30 @@ import (
 )
 
 type options struct {
-	certFile            string
-	keyFile             string
-	searchPath          []string
-	caFile              string
-	loadSystemCA        bool
-	minTLSVersion       uint16
-	insecureSkipVerify  bool
-	dynamicCertLifetime time.Duration
-	dynamicCertKeySize  int
+	certFile                 string
+	keyFile                  string
+	searchPath               []string
+	caFile                   string
+	loadSystemCA             bool
+	minTLSVersion            uint16
+	dialInsecureSkipVerify   bool
+	serverInsecureSkipVerify bool
+	dynamicCertLifetime      time.Duration
+	dynamicCertKeySize       int
 }
 
 func defaultOptions() options {
 	return options{
-		certFile:            "",
-		keyFile:             "",
-		searchPath:          []string{},
-		caFile:              "",
-		loadSystemCA:        false,
-		minTLSVersion:       tls.VersionTLS13,
-		insecureSkipVerify:  false,
-		dynamicCertLifetime: time.Hour,
-		dynamicCertKeySize:  2048, //nolint:gomnd // default key size for dynamic certificates.
+		certFile:                 "",
+		keyFile:                  "",
+		searchPath:               []string{},
+		caFile:                   "",
+		loadSystemCA:             false,
+		minTLSVersion:            tls.VersionTLS13,
+		dialInsecureSkipVerify:   false,
+		serverInsecureSkipVerify: false,
+		dynamicCertLifetime:      time.Hour,
+		dynamicCertKeySize:       2048, //nolint:gomnd // default key size for dynamic certificates.
 	}
 }
 
@@ -201,10 +203,17 @@ func MinTLSVersion(tlsVer uint16) Option {
 	})
 }
 
-// InsecureSkipVerify sets the InsecureSkipVerify on the client options.
-func InsecureSkipVerify(verify bool) Option {
+// InsecureSkipVerifyOnDial sets the InsecureSkipVerify on the DialOptions.
+func InsecureSkipVerifyOnDial(verify bool) Option {
 	return newFuncOption(func(o *options) {
-		o.insecureSkipVerify = verify
+		o.dialInsecureSkipVerify = verify
+	})
+}
+
+// InsecureSkipVerifyOnServer sets the InsecureSkipVerify on the ServerOptions.
+func InsecureSkipVerifyOnServer(verify bool) Option {
+	return newFuncOption(func(o *options) {
+		o.serverInsecureSkipVerify = verify
 	})
 }
 
