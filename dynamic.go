@@ -23,6 +23,18 @@ type DynamicProvider struct {
 	caPool       *x509.CertPool
 }
 
+// MustDynamicCertProvider returns a DynamicCertProvider or panic.
+func MustDynamicCertProvider(
+	opts ...Option,
+) *DynamicProvider {
+	cp, err := NewDynamicProvider(opts...)
+	if err != nil {
+		panic(err)
+	}
+
+	return cp
+}
+
 // NewDynamicProvider returns a new DynamicProvider using dynamically generated certificates.
 func NewDynamicProvider(
 	opts ...Option,

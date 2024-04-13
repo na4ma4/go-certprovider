@@ -18,6 +18,19 @@ type FileProvider struct {
 	caPool       *x509.CertPool
 }
 
+// MustFileCertProvider returns a FileProvider or panic.
+func MustFileCertProvider(
+	certDir string,
+	opts ...Option,
+) *FileProvider {
+	cp, err := NewFileProvider(certDir, opts...)
+	if err != nil {
+		panic(err)
+	}
+
+	return cp
+}
+
 // NewFileProvider returns a new FileProvider using certs from the specified directory
 // optionally also can be used for gRPC clients by setting server to false.
 func NewFileProvider(
