@@ -33,7 +33,7 @@ func defaultOptions() options {
 		dialInsecureSkipVerify:   false,
 		serverInsecureSkipVerify: false,
 		dynamicCertLifetime:      time.Hour,
-		dynamicCertKeySize:       2048, //nolint:gomnd // default key size for dynamic certificates.
+		dynamicCertKeySize:       2048, //nolint:mnd // default key size for dynamic certificates.
 	}
 }
 
