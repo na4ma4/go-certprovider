@@ -2,9 +2,7 @@ module github.com/na4ma4/go-certprovider
 
 go 1.22.2
 
-toolchain go1.22.2
-
-require google.golang.org/grpc v1.65.0
+require google.golang.org/grpc v1.66.0
 
 require (
 	golang.org/x/net v0.27.0 // indirect
