@@ -37,9 +37,7 @@ func NewFileProvider(
 	certDir string,
 	opts ...Option,
 ) (*FileProvider, error) {
-	var err error
-
-	f := &FileProvider{ //nolint:varnamelen // `f` is fine for this scope.
+	f := &FileProvider{
 		certDir: os.ExpandEnv(certDir),
 		opts:    defaultOptions(),
 	}
@@ -50,17 +48,24 @@ func NewFileProvider(
 		opt.apply(&f.opts)
 	}
 
-	if f.identityCert, err = tls.LoadX509KeyPair(f.opts.getCertFile(), f.opts.getKeyFile()); err != nil {
-		return nil, fmt.Errorf("failed loading certificates: %w", err)
+	{
+		var err error
+		if f.identityCert, err = tls.LoadX509KeyPair(f.opts.getCertFile(), f.opts.getKeyFile()); err != nil {
+			return nil, fmt.Errorf("failed loading certificates: %w", err)
+		}
 	}
 
 	// populate certs.IdentityCert.Leaf. This has already been parsed, but
 	// intentionally discarded by LoadX509KeyPair, for some reason.
-	if f.identityCert.Leaf, err = x509.ParseCertificate(f.identityCert.Certificate[0]); err != nil {
-		return nil, fmt.Errorf("failed loading certificates: %w", err)
+	{
+		var err error
+		if f.identityCert.Leaf, err = x509.ParseCertificate(f.identityCert.Certificate[0]); err != nil {
+			return nil, fmt.Errorf("failed loading certificates: %w", err)
+		}
 	}
 
 	if f.opts.loadSystemCA {
+		var err error
 		if f.caPool, err = x509.SystemCertPool(); err != nil {
 			return nil, fmt.Errorf("failed loading certificates: %w", err)
 		}
@@ -69,9 +74,13 @@ func NewFileProvider(
 	}
 
 	if caFile, ok := f.opts.getCAFile(); ok {
-		ca, caErr := os.ReadFile(caFile)
-		if caErr != nil {
-			return nil, fmt.Errorf("failed loading certificates: %w", caErr)
+		var ca []byte
+		{
+			var err error
+			ca, err = os.ReadFile(caFile)
+			if err != nil {
+				return nil, fmt.Errorf("failed loading certificates: %w", err)
+			}
 		}
 
 		if appendOk := f.caPool.AppendCertsFromPEM(ca); !appendOk {
@@ -114,4 +123,8 @@ func (c *FileProvider) DialOption(serverName string) grpc.DialOption {
 	})
 
 	return grpc.WithTransportCredentials(creds)
+}
+
+func (c *FileProvider) KeyPair() (tls.Certificate, error) {
+	return tls.LoadX509KeyPair(c.opts.getCertFile(), c.opts.getKeyFile())
 }

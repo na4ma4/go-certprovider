@@ -19,6 +19,8 @@ import (
 // DynamicProvider uses files for the source of certificates and keys.
 type DynamicProvider struct {
 	opts         options
+	publicKey    []byte
+	privateKey   []byte
 	identityCert tls.Certificate
 	caPool       *x509.CertPool
 }
@@ -39,32 +41,40 @@ func MustDynamicCertProvider(
 func NewDynamicProvider(
 	opts ...Option,
 ) (*DynamicProvider, error) {
-	var err error
-
-	f := &DynamicProvider{ //nolint:varnamelen // `f` is fine for this scope.
+	f := &DynamicProvider{
 		opts: defaultOptions(),
 	}
 
-	pub, priv, err := f.generateKeypair()
-	if err != nil {
-		return nil, fmt.Errorf("failed to generate keypair: %w", err)
+	{
+		var err error
+		f.publicKey, f.privateKey, err = f.generateKeypair()
+		if err != nil {
+			return nil, fmt.Errorf("failed to generate keypair: %w", err)
+		}
 	}
 
 	for _, opt := range opts {
 		opt.apply(&f.opts)
 	}
 
-	if f.identityCert, err = tls.X509KeyPair(pub, priv); err != nil {
-		return nil, fmt.Errorf("failed loading certificates: %w", err)
+	{
+		var err error
+		if f.identityCert, err = tls.X509KeyPair(f.publicKey, f.privateKey); err != nil {
+			return nil, fmt.Errorf("failed loading certificates: %w", err)
+		}
 	}
 
 	// populate certs.IdentityCert.Leaf. This has already been parsed, but
 	// intentionally discarded by LoadX509KeyPair, for some reason.
-	if f.identityCert.Leaf, err = x509.ParseCertificate(f.identityCert.Certificate[0]); err != nil {
-		return nil, fmt.Errorf("failed loading certificates: %w", err)
+	{
+		var err error
+		if f.identityCert.Leaf, err = x509.ParseCertificate(f.identityCert.Certificate[0]); err != nil {
+			return nil, fmt.Errorf("failed loading certificates: %w", err)
+		}
 	}
 
 	if f.opts.loadSystemCA {
+		var err error
 		if f.caPool, err = x509.SystemCertPool(); err != nil {
 			return nil, fmt.Errorf("failed loading certificates: %w", err)
 		}
@@ -72,7 +82,7 @@ func NewDynamicProvider(
 		f.caPool = x509.NewCertPool()
 	}
 
-	if ok := f.caPool.AppendCertsFromPEM(pub); !ok {
+	if ok := f.caPool.AppendCertsFromPEM(f.publicKey); !ok {
 		return nil, ErrNoValidCertificates
 	}
 
@@ -157,4 +167,8 @@ func (c *DynamicProvider) generateKeypair() ([]byte, []byte, error) {
 	// pem.Encode(out, &pem.Block{Type: "RSA PRIVATE KEY", Bytes: x509.MarshalPKCS1PrivateKey(priv)})
 
 	return pubBlock.Bytes(), privBlock.Bytes(), nil
+}
+
+func (c *DynamicProvider) KeyPair() (tls.Certificate, error) {
+	return tls.X509KeyPair(c.publicKey, c.privateKey)
 }

@@ -13,4 +13,5 @@ type CertificateProvider interface {
 	CAPool() *x509.CertPool
 	ServerOption() grpc.ServerOption
 	DialOption(serverName string) grpc.DialOption
+	KeyPair() (tls.Certificate, error)
 }
