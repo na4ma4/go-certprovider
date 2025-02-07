@@ -4,6 +4,10 @@ go 1.22.2
 
 toolchain go1.22.10
 
+retract (
+	[v0.3.0, v0.3.3] // invalid dynamic certificate name
+)
+
 require google.golang.org/grpc v1.70.0
 
 require (
