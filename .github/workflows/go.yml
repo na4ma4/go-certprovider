@@ -14,4 +14,4 @@ jobs:
     secrets: inherit
     with:
       enable-codecov: true
-      enable-fossa: true
+      enable-fossa: false # just not working at the moment.
