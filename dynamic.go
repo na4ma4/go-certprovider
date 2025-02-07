@@ -144,7 +144,7 @@ func (c *DynamicProvider) generateKeypair() ([]byte, []byte, error) {
 	template := &x509.Certificate{
 		SerialNumber: big.NewInt(1),
 		Subject: pkix.Name{
-			Organization: []string{"Farnsworth Dynamic Certificate"},
+			Organization: []string{"Dynamic Certificate"},
 		},
 		NotBefore: time.Now(),
 		NotAfter:  time.Now().Add(c.opts.dynamicCertLifetime),
