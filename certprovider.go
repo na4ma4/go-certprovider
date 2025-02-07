@@ -11,7 +11,8 @@ import (
 type CertificateProvider interface {
 	IdentityCert() tls.Certificate
 	CAPool() *x509.CertPool
+	ServerConfig() *tls.Config
 	ServerOption() grpc.ServerOption
+	DialConfig(serverName string) *tls.Config
 	DialOption(serverName string) grpc.DialOption
-	KeyPair() (tls.Certificate, error)
 }

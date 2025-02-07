@@ -12,3 +12,6 @@ jobs:
     name: "Unit Test"
     uses: na4ma4/actions/.github/workflows/unit-test.yml@main
     secrets: inherit
+    with:
+      enable-codecov: true
+      enable-fossa: false # just not working at the moment.

@@ -103,26 +103,34 @@ func (c *FileProvider) CAPool() *x509.CertPool {
 
 // ServerOption returns the grpc.ServerOption for use with a new gRPC server.
 func (c *FileProvider) ServerOption() grpc.ServerOption {
-	creds := credentials.NewTLS(&tls.Config{ //nolint:gosec // default minimum is TLS1.3.
-		ClientCAs:    c.CAPool(),
-		ClientAuth:   tls.RequireAndVerifyClientCert,
-		Certificates: []tls.Certificate{c.IdentityCert()},
-		MinVersion:   c.opts.minTLSVersion,
-	})
+	creds := credentials.NewTLS(c.ServerConfig())
 
 	return grpc.Creds(creds)
 }
 
+func (c *FileProvider) ServerConfig() *tls.Config {
+	return &tls.Config{ //nolint:gosec // default minimum is TLS1.3.
+		ClientCAs:    c.CAPool(),
+		ClientAuth:   tls.RequireAndVerifyClientCert,
+		Certificates: []tls.Certificate{c.IdentityCert()},
+		MinVersion:   c.opts.minTLSVersion,
+	}
+}
+
 // DialOption returns the grpc.DialOption used with a gRPC client.
 func (c *FileProvider) DialOption(serverName string) grpc.DialOption {
-	creds := credentials.NewTLS(&tls.Config{ //nolint:gosec // default minimum is TLS1.3.
+	creds := credentials.NewTLS(c.DialConfig(serverName))
+
+	return grpc.WithTransportCredentials(creds)
+}
+
+func (c *FileProvider) DialConfig(serverName string) *tls.Config {
+	return &tls.Config{ //nolint:gosec // default minimum is TLS1.3.
 		ServerName:   serverName,
 		RootCAs:      c.CAPool(),
 		Certificates: []tls.Certificate{c.IdentityCert()},
 		MinVersion:   c.opts.minTLSVersion,
-	})
-
-	return grpc.WithTransportCredentials(creds)
+	}
 }
 
 func (c *FileProvider) KeyPair() (tls.Certificate, error) {
