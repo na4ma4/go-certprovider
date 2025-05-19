@@ -5,10 +5,10 @@ go 1.23.0
 toolchain go1.24.0
 
 retract [v0.3.0, v0.3.3] // invalid dynamic certificate name
+
 retract [v0.3.0, v0.3.3] // invalid dynamic certificate name
 
-require google.golang.org/grpc v1.71.0
-require google.golang.org/grpc v1.71.0
+require google.golang.org/grpc v1.72.1
 
 require (
 	golang.org/x/net v0.37.0 // indirect
