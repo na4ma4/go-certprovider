@@ -1,9 +1,22 @@
 version: 2
 updates:
   - package-ecosystem: "gomod"
-    directory: "/"
+    directories:
+      - "/"
+      - "/magefiles"
     schedule:
       interval: "weekly"
-      all-gomod:
+    groups:
+      gomod-dependencies:
+        patterns:
+          - "*"
+
+  - package-ecosystem: "github-actions"
+    directories:
+      - /
+    schedule:
+      interval: "weekly"
+    groups:
+      github-actions:
         patterns:
           - "*"
