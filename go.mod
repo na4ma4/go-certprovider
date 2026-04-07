@@ -4,7 +4,7 @@ go 1.25.0
 
 retract [v0.3.0, v0.3.3] // invalid dynamic certificate name
 
-require google.golang.org/grpc v1.79.3
+require google.golang.org/grpc v1.80.0
 
 require (
 	golang.org/x/net v0.52.0 // indirect
