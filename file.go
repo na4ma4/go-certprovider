@@ -109,7 +109,7 @@ func (c *FileProvider) ServerOption() grpc.ServerOption {
 }
 
 func (c *FileProvider) ServerConfig() *tls.Config {
-	return &tls.Config{ //nolint:gosec // default minimum is TLS1.3.
+	return &tls.Config{
 		ClientCAs:    c.CAPool(),
 		ClientAuth:   tls.RequireAndVerifyClientCert,
 		Certificates: []tls.Certificate{c.IdentityCert()},
@@ -125,7 +125,7 @@ func (c *FileProvider) DialOption(serverName string) grpc.DialOption {
 }
 
 func (c *FileProvider) DialConfig(serverName string) *tls.Config {
-	return &tls.Config{ //nolint:gosec // default minimum is TLS1.3.
+	return &tls.Config{
 		ServerName:   serverName,
 		RootCAs:      c.CAPool(),
 		Certificates: []tls.Certificate{c.IdentityCert()},
