@@ -5,9 +5,9 @@ go 1.25.0
 retract [v0.3.0, v0.3.3] // invalid dynamic certificate name
 
 require (
-	github.com/dosquad/mage v0.5.0
+	github.com/dosquad/mage v0.5.1
 	github.com/magefile/mage v1.17.2
-	google.golang.org/grpc v1.82.0
+	google.golang.org/grpc v1.82.1
 )
 
 require (
