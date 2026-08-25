@@ -7,7 +7,7 @@ retract [v0.3.0, v0.3.3] // invalid dynamic certificate name
 require (
 	github.com/dosquad/mage v0.5.1
 	github.com/magefile/mage v1.17.2
-	google.golang.org/grpc v1.83.0
+	google.golang.org/grpc v1.83.1
 )
 
 require (
