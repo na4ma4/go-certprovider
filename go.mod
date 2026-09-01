@@ -7,7 +7,7 @@ retract [v0.3.0, v0.3.3] // invalid dynamic certificate name
 require (
 	github.com/dosquad/mage v0.5.1
 	github.com/magefile/mage v1.17.2
-	google.golang.org/grpc v1.83.1
+	google.golang.org/grpc v1.83.2
 )
 
 require (
@@ -25,9 +25,9 @@ require (
 	github.com/na4ma4/go-permbits v0.5.4 // indirect
 	github.com/princjef/mageutil v1.0.0 // indirect
 	go.uber.org/multierr v1.11.0 // indirect
-	golang.org/x/net v0.56.0 // indirect
-	golang.org/x/sys v0.46.0 // indirect
-	golang.org/x/text v0.40.0 // indirect
+	golang.org/x/net v0.58.0 // indirect
+	golang.org/x/sys v0.47.0 // indirect
+	golang.org/x/text v0.41.0 // indirect
 	google.golang.org/genproto/googleapis/rpc v0.0.0-20260622175928-b703f567277d // indirect
 	google.golang.org/protobuf v1.36.11 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
