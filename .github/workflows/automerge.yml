@@ -8,4 +8,4 @@ jobs:
     name: "Dependabot"
     uses: na4ma4/actions/.github/workflows/dependabot-automerge.yml@main
     with:
-      merge-type: "squash"
+      merge-type: rebase
